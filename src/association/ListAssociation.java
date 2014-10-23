@@ -157,6 +157,7 @@ public class ListAssociation<O, M> implements Association<O, M> {
 		return false;
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	private boolean removeValue(List<M> values, M value) {
 		for(int i = 0; i < values.size(); i++)
 			if(equal(values.get(i), value)) {

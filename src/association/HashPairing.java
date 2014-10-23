@@ -107,6 +107,7 @@ public class HashPairing<K, V> implements Pairing<K, V> {
 		}
 	}
 
+	@Override
 	public boolean remove(Object key, Object value) {
 		return false;
 	}

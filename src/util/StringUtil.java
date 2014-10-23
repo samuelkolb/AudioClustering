@@ -79,6 +79,12 @@ public class StringUtil {
 		return join("", object.getClass().getSimpleName(), "@", System.identityHashCode(object));
 	}
 
+	/**
+	 * Returns a string that consists of the given character repeated for a given number of times
+	 * @param character	The character to repeat
+	 * @param number	The number of times the character should be repeated
+	 * @return	A string of length number containing only the given character
+	 */
 	public static String getRepeated(char character, int number) {
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < number; i++)
