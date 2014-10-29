@@ -9,10 +9,20 @@ public class FileUtil {
 
 	public static final int BUFFER_SIZE = 1024;
 
+	/**
+	 * Returns the basename of a given name
+	 * @param name  The name including extension
+	 * @return  The name without the extension
+	 */
 	public static String getBasename(String name) {
 		return name.replaceFirst("[.][^.]+$", "");
 	}
 
+	/**
+	 * Concatenates the content of the input files and puts them into the output file, erasing previous content
+	 * @param output        The file to write the result to
+	 * @param inputFiles    An array of input files to concatenate
+	 */
 	public static void concatenate(File output, File... inputFiles) {
 		output.getParentFile().mkdirs();
 		try{
