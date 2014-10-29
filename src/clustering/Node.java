@@ -18,7 +18,10 @@ public abstract class Node<T> {
 	//region Public methods
 	public abstract boolean isLeaf();
 
-	public abstract Node<T> getRoot();
+	public Node<T> getRoot(){
+        throw new UnsupportedOperationException("The getRoot() method is not supported!");
+
+    }
 
 	public abstract void acceptVisitor(NodeVisitor<T> visitor);
 	//endregion

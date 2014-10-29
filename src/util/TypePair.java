@@ -66,7 +66,7 @@ public interface TypePair<T> extends Pair<T, T>, Collection<T> {
 				throw new IllegalArgumentException();
 			T first = index == 0 ? newObject : getFirst();
 			T second = index == 1 ? newObject : getSecond();
-			return new TypePair.Implementation<>(first, second);
+			return new TypePair.Implementation<T>(first, second);
 		}
 
 		@Override

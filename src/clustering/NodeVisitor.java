@@ -5,7 +5,7 @@ package clustering;
  *
  * @author Samuel Kolb
  */
-public class NodeVisitor<T> {
+public abstract class NodeVisitor<T> {
 
 	//region Variables
 
@@ -16,6 +16,10 @@ public class NodeVisitor<T> {
 	//endregion
 
 	//region Public methods
+
+    public abstract void visit(LeafNode<T> node);
+
+    public abstract void visit(TreeNode<T> node);
 
 	//endregion
 }

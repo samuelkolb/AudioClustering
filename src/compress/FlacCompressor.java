@@ -28,7 +28,7 @@ public class FlacCompressor implements Compressor<Song> {
      */
     @Override
     public double compress(Song element){
-        File output = new File("output.txt");
+        File output = new File("output.flac");
         FLAC_FileEncoder.Status status = flacEncoder.encode(element.getFile(), output);
         double size = output.length();
         output.deleteOnExit();
