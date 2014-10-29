@@ -1,5 +1,7 @@
 package audio;
 
+import util.FileUtil;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -65,6 +67,15 @@ public class Song {
 		} catch(Exception e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getSongName();
+	}
+
+	private String getSongName() {
+		return FileUtil.getBasename(getFile().getName());
 	}
 
 	//endregion
