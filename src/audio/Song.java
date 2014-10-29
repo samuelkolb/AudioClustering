@@ -74,7 +74,7 @@ public class Song {
 		return getSongName();
 	}
 
-	private String getSongName() {
+	public String getSongName() {
 		return FileUtil.getBasename(getFile().getName());
 	}
 
