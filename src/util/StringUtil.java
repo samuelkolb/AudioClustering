@@ -91,8 +91,4 @@ public class StringUtil {
 			builder.append(character);
 		return builder.toString();
 	}
-
-	public static String readStream() {
-		return null; // TODO
-	}
 }
