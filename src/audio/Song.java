@@ -15,10 +15,14 @@ import java.io.IOException;
 public class Song {
 
 	//region Variables
-	private final String filename;
+	private final File file;
 
-	public String getFilename() {
-		return filename;
+    public File getFile() {
+        return file;
+    }
+
+    public String getFilename() {
+		return getFile().getName();
 	}
 
 	private final double length;
@@ -36,8 +40,7 @@ public class Song {
 	 * @param filename	The filename of the audio file
 	 */
 	public Song(String filename) {
-		this.filename = filename;
-		File file = new File(filename);
+		this.file = new File(filename);
 		if(!file.exists())
 			throw new IllegalArgumentException("File " + filename + " does not exist");
 		this.length = getLength(file);
