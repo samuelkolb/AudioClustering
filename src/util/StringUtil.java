@@ -1,5 +1,12 @@
 package util;
 
+import util.log.PrintFormat;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
  * Contains methods to print commonly used objects to different output formats
  * @author Samuel Kolb
@@ -76,7 +83,7 @@ public class StringUtil {
 	public static String getHashName(Object object) {
 		if(object == null)
 			return "null";
-		return join("", object.getClass().getSimpleName(), "@", System.identityHashCode(object));
+		return PrintFormat.NOT_SEPARATED.print(object.getClass().getSimpleName(), "@", System.identityHashCode(object));
 	}
 
 	/**
@@ -89,6 +96,24 @@ public class StringUtil {
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < number; i++)
 			builder.append(character);
+		return builder.toString();
+	}
+
+	/**
+	 * Reads the content from an input stream and returns it as a string
+	 * @param stream	The stream to read from
+	 * @return	The content of the stream as a string
+	 */
+	public static String readStream(InputStream stream) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		StringBuilder builder = new StringBuilder();
+		String line;
+		try {
+			while((line = reader.readLine()) != null)
+				builder.append(line).append("\n");
+		} catch(IOException e) {
+			throw new IllegalArgumentException(e);
+		}
 		return builder.toString();
 	}
 }
