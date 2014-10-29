@@ -24,4 +24,27 @@ public class LeafNode<T> extends Node<T> {
     public void acceptVisitor(NodeVisitor<T> visitor) {
         visitor.visit(this);
     }
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		LeafNode leafNode = (LeafNode) o;
+
+		return element == null ? leafNode.element == null : element.equals(leafNode.element);
+
+	}
+
+	@Override
+	public boolean equalsIgnoreOrder(Node<T> node) {
+		return equals(node);
+	}
+
+	@Override
+	public int hashCode() {
+		return element != null ? element.hashCode() : 0;
+	}
 }
