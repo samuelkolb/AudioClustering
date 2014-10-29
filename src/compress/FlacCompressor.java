@@ -18,6 +18,7 @@ public class FlacCompressor implements Compressor<Song> {
     //endregion
 
 
+
     //region Public methods
 
     /**
@@ -27,11 +28,10 @@ public class FlacCompressor implements Compressor<Song> {
      */
     @Override
     public double compress(Song element){
-        File output = new File("output");
+        File output = new File("output.txt");
         FLAC_FileEncoder.Status status = flacEncoder.encode(element.getFile(), output);
         double size = output.length();
-        if (! output.delete())
-            throw new IllegalStateException("Could not delete file " + output.getAbsolutePath());
+        output.deleteOnExit();
         return size;
     }
     //endregion
