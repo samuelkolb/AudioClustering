@@ -7,13 +7,13 @@ import audio.Song;
  *
  * @author Samuel Kolb
  */
-public interface DistanceMeasure {
+public interface DistanceMeasure<T> {
 
 	/**
-	 * Calculates the distance between two songs
-	 * @param song1	The first song
-	 * @param song2	The second song
+	 * Calculates the distance between two elements
+	 * @param element1	The first element
+	 * @param element2	The second element
 	 * @return	The distance according to the implemented algorithm
 	 */
-	public double distance(Song song1, Song song2);
+	public double distance(T element1, T element2);
 }
