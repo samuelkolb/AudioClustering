@@ -43,9 +43,4 @@ public class FileUtil {
 		}
 
 	}
-
-	public static void main(String[] args) {
-		File temp = new File("temp");
-		concatenate(new File(temp, "out.txt"), new File(temp, "file1.txt"), new File(temp, "file2.txt"));
-	}
 }
