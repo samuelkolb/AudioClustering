@@ -26,13 +26,18 @@ public class FlacClustering {
 
 	//region Public methods
 	public static void main(String[] args) {
-		Compressor<Song> compressor = new FlacCompressor();
 		Combiner<Song> combiner = new MixingCombiner();
+		cluster("Flac", new FlacCompressor(), combiner);
+		cluster("Vorbis", new VorbisCompressor(), combiner);
+	}
+
+	private static void cluster(String type, Compressor<Song> compressor, Combiner<Song> combiner) {
+		Log.LOG.printTitle(type + " clustering");
 		DistanceMeasure<Song> distance = new NormalisedCompressionDistance<>(compressor, combiner);
 		ClusteringAlgorithm<Song> algorithm = new HierarchicalClustering<>(distance);
 		Node<Song> tree = algorithm.cluster(getSongs());
 		Log.LOG.printLine("Visualize");
-		NodeVisualizer.visualize(tree, new File(Files.temp(), "clustering.gv"));
+		NodeVisualizer.visualize(tree, new File(Files.temp(), type + "Clustering.gv"));
 	}
 
 	private static List<Song> getSongs() {
