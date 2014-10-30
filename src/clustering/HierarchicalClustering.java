@@ -61,7 +61,9 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	@Override
 	public Node<T> cluster(Collection<T> instances) {
 		init(instances);
+		Log.LOG.printLine("Filling distances");
 		fillDistances();
+		Log.LOG.printLine("Clustering");
 		cluster();
 		return clusters.get(0).node;
 	}

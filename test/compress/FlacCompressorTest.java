@@ -1,6 +1,7 @@
 package compress;
 
 import audio.Song;
+import knowledge.Files;
 import org.junit.Test;
 import compress.FlacCompressor;
 import util.log.LinkTransformer;
@@ -15,11 +16,11 @@ import static org.junit.Assert.*;
 public class FlacCompressorTest {
 
     @Test
-    public void test1(){
+    public void test1() {
 
         FlacCompressor fCompressor = new FlacCompressor();
 
-        Song song = new Song("res" + File.separator + "SongA_CEP_1.wav");
+        Song song = new Song(new File(Files.res(), "SongA_CEP_1.wav"));
         double size = fCompressor.compress(song);
 
         Log.LOG.printLine("Size: " + size);

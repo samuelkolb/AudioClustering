@@ -1,5 +1,6 @@
 package audio;
 
+import knowledge.Files;
 import util.FileUtil;
 
 import javax.sound.sampled.AudioFormat;
@@ -39,12 +40,12 @@ public class Song {
 
 	/**
 	 * Creates a new song
-	 * @param filename	The filename of the audio file
+	 * @param file	The audio file
 	 */
-	public Song(String filename) {
-		this.file = new File(filename);
+	public Song(File file) {
+		this.file = file;
 		if(!file.exists())
-			throw new IllegalArgumentException("File " + filename + " does not exist");
+			throw new IllegalArgumentException("File " + getFile().getAbsolutePath() + " does not exist");
 		this.length = getLength(file);
 	}
 
