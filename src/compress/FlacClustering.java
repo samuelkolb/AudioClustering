@@ -1,11 +1,11 @@
 package compress;
 
 import audio.Song;
-import clustering.ClusteringAlgorithm;
-import clustering.HierarchicalClustering;
-import clustering.Node;
-import clustering.NodePrinter;
+import clustering.*;
+import knowledge.Files;
+import util.log.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +27,12 @@ public class FlacClustering {
 	//region Public methods
 	public static void main(String[] args) {
 		Compressor<Song> compressor = new FlacCompressor();
-		Combiner<Song> combiner = null;
+		Combiner<Song> combiner = new MixingCombiner();
 		DistanceMeasure<Song> distance = new NormalisedCompressionDistance<>(compressor, combiner);
 		ClusteringAlgorithm<Song> algorithm = new HierarchicalClustering<>(distance);
 		Node<Song> tree = algorithm.cluster(getSongs());
-		NodePrinter.printTree(tree);
+		Log.LOG.printLine("Visualize");
+		NodeVisualizer.visualize(tree, new File(Files.temp(), "clustering.gv"));
 	}
 
 	private static List<Song> getSongs() {
@@ -43,9 +44,9 @@ public class FlacClustering {
 
 	private static List<Song> getSongVariants(String song) {
 		return Arrays.asList(
-				new Song(song + "_SGP_1.wav"),
-				new Song(song + "_CEP_1.wav"),
-				new Song(song + "_SGP_2.wav")
+				new Song(new File(Files.res(), song + "_SGP_1.wav")),
+				new Song(new File(Files.res(), song + "_CEP_1.wav")),
+				new Song(new File(Files.res(), song + "_SGP_2.wav"))
 		);
 	}
 
