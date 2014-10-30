@@ -36,7 +36,7 @@ public class MixingCombiner implements Combiner<Song> {
 			AudioInputStream mixed = new AudioInputStream(
 							new MixingAudioInputStream(clip1.getFormat(), Arrays.asList(clip1, clip2)),
 							clip1.getFormat(),
-							clip1.getFrameLength() + clip2.getFrameLength());
+							Math.max(clip1.getFrameLength(), clip2.getFrameLength()));
 
 			AudioSystem.write(mixed, AudioFileFormat.Type.WAVE, output);
 		} catch (Exception e) {
