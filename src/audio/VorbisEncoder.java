@@ -101,7 +101,7 @@ public class VorbisEncoder {
 
 			FileInputStream fin = new FileInputStream(input);
 
-			Log.LOG.print( "Encoding." );
+			Log.LOG.print( "Encoding..." );
 			while ( !eos ) {
 
 				int i;
@@ -168,7 +168,6 @@ public class VorbisEncoder {
 						}
 					}
 				}
-				Log.LOG.print(".");
 			}
 
 			fin.close();
