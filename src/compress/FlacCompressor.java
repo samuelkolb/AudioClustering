@@ -40,7 +40,7 @@ public class FlacCompressor implements Compressor<Song> {
 		    return cache.get(name);
 	    }
         File output = new File(Files.temp(), name + "_Output.flac");
-	    Log.LOG.printLine(output.exists() ? "Cached file" : "Creatig file");
+	    Log.LOG.printLine(output.exists() ? "Cached file" : "Creating file");
 	    if(!output.exists())
             flacEncoder.encode(element.getFile(), output);
 	    double result = (double) output.length();
