@@ -22,14 +22,15 @@ public class MixingCombiner implements Combiner<Song> {
 		File output = new File(Files.temp(), name);
 
 		if(!output.exists())
-			FileUtil.concatenate(output, element1.getFile(), element2.getFile());
-		mix(element1, element2, output);
+			mix(element1, element2, output);
 
 		return new Song(output);
 	}
 
 	private void mix(Song element1, Song element2, File output) {
 		try {
+			if(!output.exists())
+				output.createNewFile();
 			AudioInputStream clip1 = AudioSystem.getAudioInputStream(element1.getFile());
 			AudioInputStream clip2 = AudioSystem.getAudioInputStream(element2.getFile());
 

@@ -1,7 +1,9 @@
 package util.runtime;
 
 import util.StringUtil;
+import util.log.Log;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -52,6 +54,18 @@ public class Terminal {
 			return StringUtil.readStream(process.getInputStream());
 		} catch(Exception e) {
 			throw new IllegalArgumentException(e);
+		}
+	}
+
+	public double getFileSize(File file) {
+		String command = "ls -l " + file.getAbsolutePath();
+		OperatingSystem os = OperatingSystem.getOperatingSystem();
+		if(os == OperatingSystem.MAC || os == OperatingSystem.LINUX) {
+			String string = runCommand(command);
+			String[] parts = string.split("\\s+");
+			return Double.parseDouble(parts[4]);
+		} else {
+			return file.length();
 		}
 	}
 	//endregion

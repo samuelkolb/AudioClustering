@@ -46,12 +46,20 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	}
 
 	private List<double[]> distances;
+
+	private Linkage linkage;
 	//endregion
 
 	//region Construction
 
-	public HierarchicalClustering(DistanceMeasure<T> distanceMeasure) {
+	/**
+	 * Creates a new hierarchical clustering instance
+	 * @param distanceMeasure	The distance measure
+	 * @param linkage			The linkage
+	 */
+	public HierarchicalClustering(DistanceMeasure<T> distanceMeasure, Linkage linkage) {
 		this.distanceMeasure = distanceMeasure;
+		this.linkage = linkage;
 	}
 
 	//endregion
@@ -117,6 +125,7 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 			if (cluster != growing && cluster != disappearing) {
 				double distance1 = getDistance(cluster, growing);
 				double distance2 = getDistance(cluster, disappearing);
+				//double max = (distance1+distance2)/2;
 				double max = Math.max(distance1, distance2);
 				updateDistance(cluster.getDelegate(), growing.getDelegate(), max);
 			}

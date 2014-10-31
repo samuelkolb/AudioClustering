@@ -21,7 +21,7 @@ public class HierarchicalClusteringTest {
 
 	@Test
 	public void testNumberClustering() {
-		ClusteringAlgorithm<Integer> algorithm = new HierarchicalClustering<>(new IntegerDistance());
+		ClusteringAlgorithm<Integer> algorithm = new HierarchicalClustering<>(new IntegerDistance(), Linkage.COMPLETE);
 		Node<Integer> solution = algorithm.cluster(NUMBERS);
 		Node<Integer> root = new TreeNode<>(new TreeNode<>(new TreeNode<>(1, 3), new TreeNode<>(5, 8)), -10);
 		assertTrue(solution.equalsIgnoreOrder(root));

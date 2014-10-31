@@ -19,16 +19,15 @@ public class ConcatenationCombiner implements Combiner<Song> {
 	public Song combine(Song element1, Song element2) {
 		String name = element1.getSongName() + "_AND_" + element2.getSongName() + ".wav";
 		File output = new File(Files.temp(), name);
-
 		if(!output.exists())
-			FileUtil.concatenate(output, element1.getFile(), element2.getFile());
-		concatenate(element1, element2, output);
-
+			concatenate(element1, element2, output);
 		return new Song(output);
 	}
 
 	private void concatenate(Song element1, Song element2, File output) {
 		try {
+			if(!output.exists())
+				output.createNewFile();
 			AudioInputStream clip1 = AudioSystem.getAudioInputStream(element1.getFile());
 			AudioInputStream clip2 = AudioSystem.getAudioInputStream(element2.getFile());
 

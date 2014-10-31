@@ -6,6 +6,8 @@ import javaFlacEncoder.FLAC_FileEncoder;
 import knowledge.Files;
 import util.FileUtil;
 import util.log.Log;
+import util.runtime.OperatingSystem;
+import util.runtime.Terminal;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,9 +23,25 @@ public class FlacCompressor implements Compressor<Song> {
 
 	private HashMap<String, Double> cache = new HashMap<>();
 
+	private Terminal terminal = new Terminal();
+
     //endregion
 
 
+	public FlacCompressor() {
+		/*if(OperatingSystem.getOperatingSystem() == OperatingSystem.MAC) {
+			String command = "ls -l " + Files.temp().getAbsolutePath() + " *.flac";
+			String[] strings = new Terminal().runCommand(command).split("\n");
+			for(String string : strings) {
+				if(!string.isEmpty()) {
+					String[] parts = string.split("\\s+");
+					double size = Double.parseDouble(parts[4]);
+					String fileName = FileUtil.getBasename(parts[7]);
+					cache.put(fileName, size);
+				}
+			}
+		}*/
+	}
 
     //region Public methods
 
@@ -43,7 +61,7 @@ public class FlacCompressor implements Compressor<Song> {
 	    Log.LOG.printLine(output.exists() ? "Cached file" : "Creating file");
 	    if(!output.exists())
             flacEncoder.encode(element.getFile(), output);
-	    double result = (double) output.length();
+		double result = terminal.getFileSize(output);
 	    cache.put(name, result);
 	    return result;
     }
