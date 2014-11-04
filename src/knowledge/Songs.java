@@ -17,7 +17,10 @@ import java.util.List;
  */
 public class Songs {
 
+
 	private static Vector<Song> songSamples = createSongSamples();
+
+	private SongClass songClass = new SongClass(songSamples);
 
 	public static Vector<Song> getSongSamples() {
 		return songSamples;
@@ -28,9 +31,11 @@ public class Songs {
 		songs.addAll(getSongSamples("Classical", "Brahms", 2));
 		songs.addAll(getSongSamples("Classical", "Mozart", 2));
 		songs.addAll(getSongSamples("Classical", "Tschaikovsky", 4));
-		songs.addAll(getSongSamples("Live", "Manson", 3));
-		songs.addAll(getSongSamples("Live", "Slipknot", 3));
+		songs.addAll(getSongSamples("Live", "Manson", 7));
+		songs.addAll(getSongSamples("Live", "Slipknot", 4));
 		songs.addAll(getSongSamples("Metal", "Cradle", 4));
+		songs.addAll(getSongSamples("Metal", "Manson", 5));
+		songs.addAll(getSongSamples("Metal", "Slipknot", 4));
 		songs.addAll(getSongSamples("Metal", "Trivium", 3));
 		songs.addAll(getSongSamples("Pop", "BSB", 3));
 		songs.addAll(getSongSamples("Pop", "Gaga", 3));
@@ -55,6 +60,10 @@ public class Songs {
 		for(String string : new String[]{"A", "B", "C", "C2"})
 			songs.addAll(getSongVariants("Song" +  string));
 		return songs;
+	}
+
+	public SongClass getSongClass(){
+		return this.songClass;
 	}
 
 	private static List<Song> getSongVariants(String song) {
