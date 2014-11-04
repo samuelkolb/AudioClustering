@@ -23,7 +23,7 @@ public class NodeVisualizer<T> extends NodeVisitor<T> {
 			NodeVisualizer<T> visualizer = new NodeVisualizer<>();
 			visualizer.writer = new PrintStream(new FileOutputStream(output));
 			visualizer.writer.println("digraph clustering {");
-			visualizer.writer.println("\tgraph [splines=polyline]");
+			visualizer.writer.println("\tgraph [splines=spline]");
 			tree.acceptVisitor(visualizer);
 			visualizer.writer.print("\t{rank=same;");
 			for(Integer leaf : visualizer.leafs)
@@ -45,7 +45,7 @@ public class NodeVisualizer<T> extends NodeVisitor<T> {
 	@Override
 	public void visit(TreeNode<T> node) {
 		int id = counter++;
-		writer.println("\t" + id + "[label=\"\"]");
+		writer.println("\t" + id + "[label=\"" + node.getLabel() + "\"]");
 		writer.println("\t" + id + " -> " + counter);
 		node.getChildren().getFirst().acceptVisitor(this);
 		writer.println("\t" + id + " -> " + counter);
