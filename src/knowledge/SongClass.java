@@ -3,6 +3,7 @@ package knowledge;
 import association.Association;
 import association.HashAssociation;
 import audio.Song;
+import util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,15 @@ public class SongClass {
 	//endregion
 
 	//region Construction
+
+    public SongClass(Vector<Song> songs) {
+        for(int i = 0; i < songs.size() - 1; i++) {
+            String[] splitName = songs.get(i).getSongName().split("/([^_]+)/g");
+            for(int j = 0; j < splitName.length - 1; j++){
+                addSong(splitName[j], songs.get(i));
+            }
+        }
+    }
 
 	//endregion
 
