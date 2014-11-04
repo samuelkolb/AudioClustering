@@ -31,7 +31,7 @@ public class FlacClustering {
 		Combiner<Song> concatenation = new ConcatenationCombiner();
 		Compressor<Song> flac = new FlacCompressor();
 		Compressor<Song> vorbis = new VorbisCompressor();
-		Vector<Song> songSamples = Songs.getSongSamples();
+		Vector<Song> songSamples = Songs.getSamples().getSongs();
 
 		Linkage linkage = Linkage.COMPLETE;
 

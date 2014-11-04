@@ -1,9 +1,8 @@
 package knowledge;
 
-import association.Association;
-import association.ListAssociation;
 import audio.Song;
 import util.Vector;
+import util.WriteOnceVector;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,18 +17,44 @@ import java.util.List;
 public class Songs {
 
 
-	private static Vector<Song> songSamples = createSongSamples();
+	private static Songs samples = createSamples();
 
-    private SongClass songClass = new SongClass(songSamples);
-
-	public static Vector<Song> getSongSamples() {
-		return songSamples;
+	public static Songs getSamples() {
+		return samples;
 	}
 
-	private static Vector<Song> createSongSamples() {
-		List<Song> songs = new ArrayList<>();
-		// hi
-    	songs.addAll(getSongSamples("Classical", "Brahms", 2));
+	private final Vector<Song> songs;
+
+	public Vector<Song> getSongs() {
+		return songs;
+	}
+
+	private final Vector<SongClass> classes;
+
+	public Vector<SongClass> getClasses() {
+		return classes;
+	}
+
+	public Songs(Vector<SongClass> classes, int numberSongs) {
+		this.classes = classes;
+		this.songs = new WriteOnceVector<>(new Song[numberSongs]);
+	}
+
+	public void addSong(Song song, String... values) {
+		this.songs.add(song);
+		for(int i = 0; i < classes.length; i++)
+			if(values[i] != null)
+				classes.get(i).addSong(values[i], song);
+	}
+
+	private static Songs createSamples() {
+		WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[1]);
+		classes.add(new SongClass("Genre"));
+		Songs songs = new Songs(classes, 46);
+
+		addSamples(songs, "Classical", "Brahms", 1, 2);
+
+    	/*songs.addAll(getSongSamples("Classical", "Brahms", 2));
 		songs.addAll(getSongSamples("Classical", "Mozart", 2));
 		songs.addAll(getSongSamples("Classical", "Tschaikovsky", 4));
 		songs.addAll(getSongSamples("Live", "Manson", 7));
@@ -40,32 +65,24 @@ public class Songs {
 		songs.addAll(getSongSamples("Metal", "Trivium", 3));
 		songs.addAll(getSongSamples("Pop", "BSB", 3));
 		songs.addAll(getSongSamples("Pop", "Gaga", 3));
-		songs.addAll(getSongSamples("Pop", "Katy", 3));
-		return new Vector<>(songs.toArray(new Song[songs.size()]));
-	}
-
-	private static List<Song> getSongSamples(String genre, String artist, int numberSamples) {
-		List<Song> songs = new ArrayList<>();
-		for(int i = 1; i <= numberSamples; i++)
-			songs.add(getSongSample(genre, artist, (i-1)/2+1, (i-1)%2+1));
+		songs.addAll(getSongSamples("Pop", "Katy", 3));*/
 		return songs;
 	}
 
-	private static Song getSongSample(String genre, String artist, int number, int sample) {
+	private static void addSamples(Songs songs, String genre, String artist, int song, int samples) {
 		File dir = new File(Files.res(), genre);
-		return new Song(new File(dir, genre + "_" + artist + "_song" + number + "_" + sample + ".wav"));
+		for(int i = 1; i <= samples; i++) {
+			File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
+			songs.addSong(new Song(file), genre);
+		}
 	}
 
-	public static List<Song> getCustomSongs() {
+	/*public static List<Song> getCustomSongs() {
 		List<Song> songs = new ArrayList<>();
 		for(String string : new String[]{"A", "B", "C", "C2"})
 			songs.addAll(getSongVariants("Song" +  string));
 		return songs;
 	}
-
-    public SongClass getSongClass(){
-        return this.songClass;
-    }
 
 	private static List<Song> getSongVariants(String song) {
 		return Arrays.asList(
@@ -73,6 +90,6 @@ public class Songs {
 				new Song(new File(Files.res(), song + "_CEP_1.wav")),
 				new Song(new File(Files.res(), song + "_SGP_2.wav"))
 		);
-	}
+	}*/
 
 }

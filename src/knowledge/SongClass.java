@@ -17,18 +17,28 @@ public class SongClass {
 
 	//region Variables
 	private Association<String, Song> association = new HashAssociation<>(false, false);
+
+	private final String name;
+
+	public String getName() {
+		return name;
+	}
+
 	//endregion
 
 	//region Construction
 
-    public SongClass(Vector<Song> songs) {
+   /* public SongClass(Vector<Song> songs) {
         for(int i = 0; i < songs.size() - 1; i++) {
             String[] splitName = songs.get(i).getSongName().split("/([^_]+)/g");
             for(int j = 0; j < splitName.length - 1; j++){
                 addSong(splitName[j], songs.get(i));
             }
         }
-    }
+    }*/
+	public SongClass(String name) {
+		this.name = name;
+	}
 
 	//endregion
 
