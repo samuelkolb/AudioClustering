@@ -3,6 +3,7 @@ package knowledge;
 import association.Association;
 import association.ListAssociation;
 import audio.Song;
+import util.Vector;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +17,13 @@ import java.util.List;
  */
 public class Songs {
 
-	public static List<Song> getSongSamples() {
+	private static Vector<Song> songSamples = createSongSamples();
+
+	public static Vector<Song> getSongSamples() {
+		return songSamples;
+	}
+
+	private static Vector<Song> createSongSamples() {
 		List<Song> songs = new ArrayList<>();
 		songs.addAll(getSongSamples("Classical", "Brahms", 2));
 		songs.addAll(getSongSamples("Classical", "Mozart", 2));
@@ -28,7 +35,7 @@ public class Songs {
 		songs.addAll(getSongSamples("Pop", "BSB", 3));
 		songs.addAll(getSongSamples("Pop", "Gaga", 3));
 		songs.addAll(getSongSamples("Pop", "Katy", 3));
-		return songs;
+		return new Vector<>(songs.toArray(new Song[songs.size()]));
 	}
 
 	private static List<Song> getSongSamples(String genre, String artist, int numberSamples) {

@@ -1,7 +1,5 @@
 package clustering;
 
-import association.Association;
-import association.HashAssociation;
 import compress.DistanceMeasure;
 import util.StringUtil;
 import util.log.Log;
@@ -48,6 +46,8 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	private List<double[]> distances;
 
 	private Linkage linkage;
+
+	private int label;
 	//endregion
 
 	//region Construction
@@ -83,6 +83,7 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 		this.clusters = new LinkedList<>();
 		for(int i = 0; i < this.instances.size(); i++)
 			this.clusters.add(new Cluster(new LeafNode<>(this.instances.get(i)), i));
+		this.label = 1;
 	}
 
 	private void fillDistances() {
@@ -114,7 +115,8 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	}
 
 	private void merge(Cluster cluster1, Cluster cluster2) {
-		Cluster newCluster = new Cluster(new TreeNode<>(cluster1.node, cluster2.node), cluster1.getDelegate());
+		TreeNode<T> node = new TreeNode<>(cluster1.node, cluster2.node, this.label++);
+		Cluster newCluster = new Cluster(node, cluster1.getDelegate());
 		updateDistances(cluster1, cluster2);
 		this.clusters.removeAll(Arrays.asList(cluster1, cluster2));
 		this.clusters.add(newCluster);
@@ -125,9 +127,8 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 			if (cluster != growing && cluster != disappearing) {
 				double distance1 = getDistance(cluster, growing);
 				double distance2 = getDistance(cluster, disappearing);
-				//double max = (distance1+distance2)/2;
-				double max = Math.max(distance1, distance2);
-				updateDistance(cluster.getDelegate(), growing.getDelegate(), max);
+				double newDistance = linkage.combine(distance1, distance2);
+				updateDistance(cluster.getDelegate(), growing.getDelegate(), newDistance);
 			}
 	}
 

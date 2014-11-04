@@ -79,5 +79,22 @@ public class Song {
 		return FileUtil.getBasename(getFile().getName());
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		Song song = (Song) o;
+
+		if(file != null ? !file.equals(song.file) : song.file != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return file != null ? file.hashCode() : 0;
+	}
+
 	//endregion
 }

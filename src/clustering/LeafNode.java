@@ -47,4 +47,9 @@ public class LeafNode<T> extends Node<T> {
 	public int hashCode() {
 		return element != null ? element.hashCode() : 0;
 	}
+
+	@Override
+	public boolean contains(T value) {
+		return getElement().equals(value);
+	}
 }

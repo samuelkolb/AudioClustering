@@ -1,0 +1,42 @@
+package knowledge;
+
+import association.Association;
+import association.HashAssociation;
+import audio.Song;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by samuelkolb on 04/11/14.
+ *
+ * @author Samuel Kolb
+ */
+public class SongClass {
+
+	//region Variables
+	private Association<String, Song> association = new HashAssociation<>(false, false);
+	//endregion
+
+	//region Construction
+
+	//endregion
+
+	//region Public methods
+	public void addSong(String value, Song song) {
+		this.association.associate(value, song);
+	}
+
+	public List<Song> getSongs(String value) {
+		return new ArrayList<>(this.association.getValues(value));
+	}
+
+	public String getValue(Song song) {
+		return this.association.getKey(song);
+	}
+
+	public boolean contains(Song song) {
+		return this.association.containsValue(song);
+	}
+	//endregion
+}

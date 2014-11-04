@@ -4,11 +4,12 @@ package clustering;
 import util.Pair;
 import util.TypePair;
 
+import java.util.LinkedList;
+
 /**
  * Created by AnnaES on 29-Oct-14.
  */
 public class TreeNode<T> extends Node<T> {
-
 
     private final TypePair<Node<T>> children;
 
@@ -16,22 +17,45 @@ public class TreeNode<T> extends Node<T> {
 		return children;
 	}
 
+	private final int label;
+
+	public int getLabel() {
+		return label;
+	}
+
 	public TreeNode(T value1, T value2){
-		this(new LeafNode<T>(value1), new LeafNode<T>(value2));
+		this(value1, value2, -1);
 	}
 
 	public TreeNode(T value1, Node<T> child2){
-		this(new LeafNode<>(value1), child2);
+		this(value1, child2, -1);
 	}
 
 	public TreeNode(Node<T> child1, T value2){
-		this(child1, new LeafNode<T>(value2));
+		this(child1, value2, -1);
 	}
 
-	public TreeNode(Node<T> child1, Node<T> child2){
+	public TreeNode(Node<T> child1, Node<T> child2) {
+		this(child1, child2, -1);
+	}
+
+	public TreeNode(T value1, T value2, int label){
+		this(new LeafNode<T>(value1), new LeafNode<T>(value2), label);
+	}
+
+	public TreeNode(T value1, Node<T> child2, int label){
+		this(new LeafNode<>(value1), child2, label);
+	}
+
+	public TreeNode(Node<T> child1, T value2, int label){
+		this(child1, new LeafNode<T>(value2), label);
+	}
+
+	public TreeNode(Node<T> child1, Node<T> child2, int label){
 		children = new TypePair.Implementation<>(child1, child2);
 		child1.setParent(this);
 		child2.setParent(this);
+		this.label = label;
 	}
 
 	@Override
@@ -75,4 +99,26 @@ public class TreeNode<T> extends Node<T> {
 	public int hashCode() {
 		return children.hashCode();
 	}
+
+	@Override
+	public boolean contains(T value) {
+		return getChildren().getFirst().contains(value) || getChildren().getSecond().contains(value);
+	}
+
+	public double measureSeparation(T element1, T element2) {
+		LeafNode<T> leaf1 = NodeFinder.find(this, element1);
+		LeafNode<T> leaf2 = NodeFinder.find(this, element2);
+		LinkedList<TreeNode<T>> path1 = leaf1.getPath();
+		LinkedList<TreeNode<T>> path2 = leaf2.getPath();
+		TreeNode<T> split;
+		do {
+			split = path1.pollFirst();
+			path2.pollFirst();
+		} while(path1.peekFirst() == path2.peekFirst());
+		int firstNodeLabel = Math.min(leaf1.getParent().getLabel(), leaf2.getParent().getLabel());
+		double distance = split.getLabel() - firstNodeLabel;
+		return distance/getLabel();
+	}
+
+
 }
