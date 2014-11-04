@@ -125,7 +125,7 @@ public class Vector<T> implements Collection<T> {
 
 	@Override
 	public Object[] toArray() {
-		Object[] array = new Object[0];
+		Object[] array = new Object[this.length];
 		for(int i = 0; i < size(); i++)
 			array[i] = get(i);
 		return array;

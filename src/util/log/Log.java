@@ -67,7 +67,7 @@ public class Log {
 	//region Variables
 	private Stack<LogState> states = new Stack<LogState>();
 
-	public LogState getState() {
+	private LogState getState() {
 		return this.states.peek();
 	}
 
@@ -75,7 +75,7 @@ public class Log {
 	 * Saves the old state
 	 */
 	public void saveState() {
-		pushState(getState());
+		pushState(new LogState(getState()));
 	}
 
 	private void pushState(LogState state) {

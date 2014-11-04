@@ -1,5 +1,7 @@
 package util.log;
 
+import util.ArrayUtil;
+
 import java.util.function.Predicate;
 
 /**
@@ -68,6 +70,10 @@ class LogState {
 		this(channel, null, null, transformers);
 	}
 
+	public LogState(LogState state) {
+		this(state.getChannel(), state.callerPredicate, state.messagePredicate, ArrayUtil.copy(state.transformers));
+	}
+
 	public LogState(OutputChannel channel, Predicate<StackTraceElement> callerPredicate,
 					Predicate<LogMessage> messagePredicate, StringTransformer[] transformers) {
 		this.channel = channel;
@@ -93,5 +99,6 @@ class LogState {
 			string = transformer.transform(message.STACK_TRACE_ELEMENT, string);
 		return string;
 	}
+
 	//endregion
 }
