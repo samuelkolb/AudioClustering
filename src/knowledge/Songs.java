@@ -17,42 +17,75 @@ import java.util.List;
 public class Songs {
 
 
-	private static Songs samples = createSamples();
+    private static Songs samples = createSamples();
 
-	public static Songs getSamples() {
-		return samples;
-	}
+    public static Songs getSamples() {
+        return samples;
+    }
 
-	private final Vector<Song> songs;
+    private final Vector<Song> songs;
 
-	public Vector<Song> getSongs() {
-		return songs;
-	}
+    public Vector<Song> getSongs() {
+        return songs;
+    }
 
-	private final Vector<SongClass> classes;
+    private final Vector<SongClass> classes;
 
-	public Vector<SongClass> getClasses() {
-		return classes;
-	}
+    public Vector<SongClass> getClasses() {
+        return classes;
+    }
 
-	public Songs(Vector<SongClass> classes, int numberSongs) {
-		this.classes = classes;
-		this.songs = new WriteOnceVector<>(new Song[numberSongs]);
-	}
+    public Songs(Vector<SongClass> classes, int numberSongs) {
+        this.classes = classes;
+        this.songs = new WriteOnceVector<>(new Song[numberSongs]);
+    }
 
-	public void addSong(Song song, String... values) {
-		this.songs.add(song);
-		for(int i = 0; i < classes.length; i++)
-			if(values[i] != null)
-				classes.get(i).addSong(values[i], song);
-	}
+    public void addSong(Song song, String... values) {
+        this.songs.add(song);
+        for(int i = 0; i < classes.length; i++)
+            if(values[i] != null)
+                classes.get(i).addSong(values[i], song);
+    }
 
-	private static Songs createSamples() {
-		WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[1]);
-		classes.add(new SongClass("Genre"));
-		Songs songs = new Songs(classes, 46);
+    private static Songs createSamples() {
+        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[1]);
 
-		addSamples(songs, "Classical", "Brahms", 1, 2);
+        classes.add(new SongClass("Genre"));
+	    /* classes.add(new SongClass("Artist"));
+        classes.add(new SongClass("Songsamples"));
+        classes.add(new SongClass("Song"));
+        classes.add(new SongClass("Live vs non live")); */
+
+        Songs songs = new Songs(classes, 46);
+
+        addSamples(songs, "Classical", "Brahms", 1, 2);
+        addSamples(songs, "Classical", "Mozart", 1, 2);
+
+        for (int i = 1; i <= 2; i++) {
+            addSamples(songs, "Classical", "Tschaikovsky", i, 2);
+            addSamples(songs, "Live", "Slipknot", i, 2);
+            addSamples(songs, "Metal", "Cradle", i, 2);
+            addSamples(songs, "Metal", "Slipknot", i, 2);
+        }
+
+        addSamples(songs, "Live", "Manson", 1, 3);
+        addSamples(songs, "Metal", "Manson", 1, 3);
+        for (int i = 2; i <= 3; i++) {
+            addSamples(songs, "Live", "Manson", i, 2);
+            addSamples(songs, "Metal", "Manson", i, 2);
+        }
+
+        addSamples(songs, "Metal", "Trivium", 1, 2);
+        addSamples(songs, "Metal", "Trivium", 2, 1);
+
+        addSamples(songs, "Pop", "BSB", 1, 2);
+        addSamples(songs, "Pop", "BSB", 2, 1);
+
+        addSamples(songs, "Pop", "Gaga", 1, 2);
+        addSamples(songs, "Pop", "Gaga", 2, 1);
+
+        addSamples(songs, "Pop", "Katy", 1, 2);
+        addSamples(songs, "Pop", "Katy", 2, 1);
 
     	/*songs.addAll(getSongSamples("Classical", "Brahms", 2));
 		songs.addAll(getSongSamples("Classical", "Mozart", 2));
@@ -66,16 +99,16 @@ public class Songs {
 		songs.addAll(getSongSamples("Pop", "BSB", 3));
 		songs.addAll(getSongSamples("Pop", "Gaga", 3));
 		songs.addAll(getSongSamples("Pop", "Katy", 3));*/
-		return songs;
-	}
+        return songs;
+    }
 
-	private static void addSamples(Songs songs, String genre, String artist, int song, int samples) {
-		File dir = new File(Files.res(), genre);
-		for(int i = 1; i <= samples; i++) {
-			File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
-			songs.addSong(new Song(file), genre);
-		}
-	}
+    private static void addSamples(Songs songs, String genre, String artist, int song, int samples) {
+        File dir = new File(Files.res(), genre);
+        for(int i = 1; i <= samples; i++) {
+            File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
+            songs.addSong(new Song(file), genre);
+        }
+    }
 
 	/*public static List<Song> getCustomSongs() {
 		List<Song> songs = new ArrayList<>();
