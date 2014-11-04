@@ -36,7 +36,8 @@ public class FlacClustering {
 		Linkage linkage = Linkage.COMPLETE;
 
 		Node<Song> node = cluster("FlacMixSingle", flac, mixing, linkage, songSamples);
-
+		double score = Songs.getSamples().getClasses().get(0).getFScore(node);
+		Log.LOG.printTitle("Score: " + score);
 	}
 
 	private static Node<Song> cluster(String type, Compressor<Song> compressor, Combiner<Song> combiner,
