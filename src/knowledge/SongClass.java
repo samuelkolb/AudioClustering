@@ -3,10 +3,7 @@ package knowledge;
 import association.Association;
 import association.HashAssociation;
 import audio.Song;
-import clustering.LeafNode;
-import clustering.Node;
-import clustering.NodeFlattener;
-import clustering.TreeNode;
+import clustering.*;
 import util.TypePair;
 import util.Vector;
 import util.log.Log;
@@ -66,17 +63,36 @@ public class SongClass {
 		return this.association.containsValue(song);
 	}
 
+	public double getFAverageScore(Node<Song> node) {
+		double max = 0;
+		TreeNode<Song> tree = (TreeNode<Song>) node;
+		for(int i = 0; i <= tree.getLabel(); i++)
+			max = Math.max(max, getFAverageScore(NodeCutter.cut(tree, i)));
+		return max;
+	}
+
+	private double getFAverageScore(List<Node<Song>> cut) {
+		double score = 0;
+		for(String value : this.association.getKeys()) {
+			double maxScore = 0;
+			for(Node<Song> node : cut)
+				maxScore = Math.max(maxScore, getScore(value, node));
+			score += maxScore / this.association.getKeys().size();
+		}
+		return score;
+	}
+
 	public double getFScore(Node<Song> node) {
 		double score = 0;
 		for(String value : this.association.getKeys()) {
 			double fScore = getFScore(value, node);
 			Log.LOG.printLine(String.format("Score: %f for value: %s", fScore, value));
-			score += fScore /this.association.getKeys().size();
+			score += fScore / this.association.getKeys().size();
 		}
 		return score;
 	}
 
-	public double getFScore(String value, Node<Song> node) {
+	private double getFScore(String value, Node<Song> node) {
 		double score = getScore(value, node);
 		if(node instanceof LeafNode)
 			return score;
@@ -85,17 +101,22 @@ public class SongClass {
 		return Math.max(Math.max(getFScore(value, children.getFirst()), getFScore(value, children.getSecond())), score);
 	}
 
-	public double getScore(String value, Node<Song> songs) {
+	private double getScore(String value, Node<Song> songs) {
 		int classCount = this.association.getValues(value).size();
-		List<Song> clusterElements = NodeFlattener.flatten(songs);
+		List<Song> clusterElements = new ArrayList<>();
+		for(Song song : NodeFlattener.flatten(songs))
+			if(this.association.containsValue(song))
+				clusterElements.add(song);
 		int clusterCount = clusterElements.size();
 		int correctCount = countCorrect(value, clusterElements);
+		if(correctCount == 0)
+			return 0;
 		double recall = correctCount / (double) classCount;
 		double precision = correctCount / (double) clusterCount;
-		return 2 * recall * precision / (recall + precision);
+		return recall + precision != 0 ? 2 * recall * precision / (recall + precision) : 0;
 	}
 
-	private int countCorrect(String value, List<Song> clusterElements) {
+	private int countCorrect(String value, Collection<Song> clusterElements) {
 		int result = 0;
 		Collection<Song> values = this.association.getValues(value);
 		for(Song song : clusterElements)

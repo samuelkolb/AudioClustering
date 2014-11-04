@@ -4,7 +4,6 @@ import audio.Song;
 import audio.VorbisEncoder;
 import knowledge.Files;
 import util.log.Log;
-import util.runtime.Terminal;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,8 +18,6 @@ public class VorbisCompressor implements Compressor<Song> {
 
 	private Map<String, Double> cache = new HashMap<>();
 
-	private Terminal terminal = new Terminal();
-
 	@Override
 	public double compress(Song element) {
 		String name = element.getSongName();
@@ -32,7 +29,7 @@ public class VorbisCompressor implements Compressor<Song> {
 		Log.LOG.printLine(output.exists() ? "Cached file" : "Creating file");
 		if(!output.exists())
 			encoder.encode(element.getFile(), output);
-		double result = terminal.getFileSize(output);
+		double result = (double) output.length();
 		cache.put(name, result);
 		return result;
 	}

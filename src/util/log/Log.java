@@ -73,9 +73,11 @@ public class Log {
 
 	/**
 	 * Saves the old state
+	 * @return The log itself for chaining
 	 */
-	public void saveState() {
+	public Log saveState() {
 		pushState(new LogState(getState()));
+		return this;
 	}
 
 	private void pushState(LogState state) {
@@ -84,9 +86,11 @@ public class Log {
 
 	/**
 	 * Returns the log to the previous state
+	 * @return The log itself for chaining
 	 */
-	public void revert() {
+	public Log revert() {
 		this.states.pop();
+		return this;
 	}
 
 	public OutputChannel getChannel() {

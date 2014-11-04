@@ -48,13 +48,13 @@ public class Songs {
     }
 
     private static Songs createSamples() {
-        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[1]);
+        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[3]);
 
         classes.add(new SongClass("Genre"));
-	    /* classes.add(new SongClass("Artist"));
-        classes.add(new SongClass("Songsamples"));
-        classes.add(new SongClass("Song"));
-        classes.add(new SongClass("Live vs non live")); */
+	    classes.add(new SongClass("Artist"));
+        /*classes.add(new SongClass("Songsamples"));
+        classes.add(new SongClass("Song"));//*/
+        classes.add(new SongClass("Live"));
 
         Songs songs = new Songs(classes, 46);
 
@@ -106,7 +106,9 @@ public class Songs {
         File dir = new File(Files.res(), genre);
         for(int i = 1; i <= samples; i++) {
             File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
-            songs.addSong(new Song(file), genre);
+			String genreLabel = genre.equals("Live") ? null : genre;
+			String liveLabel = genre.equals("Live") ? "Yes" : "No";
+			songs.addSong(new Song(file), genreLabel, liveLabel, artist);
         }
     }
 

@@ -4,10 +4,7 @@ package compress;
 import audio.Song;
 import javaFlacEncoder.FLAC_FileEncoder;
 import knowledge.Files;
-import util.FileUtil;
 import util.log.Log;
-import util.runtime.OperatingSystem;
-import util.runtime.Terminal;
 
 import java.io.File;
 import java.util.HashMap;
@@ -22,8 +19,6 @@ public class FlacCompressor implements Compressor<Song> {
     private FLAC_FileEncoder flacEncoder = new FLAC_FileEncoder();
 
 	private HashMap<String, Double> cache = new HashMap<>();
-
-	private Terminal terminal = new Terminal();
 
     //endregion
 
@@ -61,7 +56,7 @@ public class FlacCompressor implements Compressor<Song> {
 	    Log.LOG.printLine(output.exists() ? "Cached file" : "Creating file");
 	    if(!output.exists())
             flacEncoder.encode(element.getFile(), output);
-		double result = terminal.getFileSize(output);
+		double result = (double) output.length();
 	    cache.put(name, result);
 	    return result;
     }

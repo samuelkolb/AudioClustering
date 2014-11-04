@@ -3,12 +3,16 @@ package compress;
 import audio.Song;
 import clustering.*;
 import knowledge.Files;
+import knowledge.SongClass;
 import knowledge.Songs;
 import util.TypePair;
 import util.log.Log;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+
 import util.Vector;
 
 /**
@@ -27,57 +31,46 @@ public class FlacClustering {
 
 	//region Public methods
 	public static void main(String[] args) {
-		Combiner<Song> mixing = new MixingCombiner();
-		Combiner<Song> concatenation = new ConcatenationCombiner();
-		Compressor<Song> flac = new FlacCompressor();
-		Compressor<Song> vorbis = new VorbisCompressor();
 		Vector<Song> songSamples = Songs.getSamples().getSongs();
 
-		Linkage linkage = Linkage.COMPLETE;
-
-		Node<Song> node = cluster("FlacMixSingle", flac, mixing, linkage, songSamples);
-		double score = Songs.getSamples().getClasses().get(0).getFScore(node);
-		Log.LOG.printTitle("Score: " + score);
+		for(Compressor<Song> compressor : Arrays.asList(new FlacCompressor(), new VorbisCompressor()))
+			for(Combiner<Song> combiner : Arrays.asList(new MixingCombiner(), new ConcatenationCombiner()))
+				for(Linkage linkage : Arrays.asList(Linkage.COMPLETE)/*/Linkage.values()/**/)
+					cluster(compressor, combiner, linkage, songSamples);
 	}
 
-	private static Node<Song> cluster(String type, Compressor<Song> compressor, Combiner<Song> combiner,
+	private static void cluster(Compressor<Song> compressor, Combiner<Song> combiner,
 								Linkage linkage, Vector<Song> songs) {
-		Log.LOG.printTitle(type + " clustering");
-		Log.LOG.off();
+		String type = getTypeString(compressor, combiner, linkage);
+		Log.LOG.printTitle(type).saveState().off();
+
 		DistanceMeasure<Song> distance = new NormalisedCompressionDistance<>(compressor, combiner);
 		ClusteringAlgorithm<Song> algorithm = new HierarchicalClustering<>(distance, linkage);
 		Node<Song> tree = algorithm.cluster(songs);
-		Log.LOG.on();
-		Log.LOG.printLine("Visualize");
-		NodeVisualizer.visualize(tree, new File(Files.temp(), type + "Clustering.gv"));
-		return tree;
+		NodeVisualizer.visualize(tree, new File(Files.temp(), type + ".gv"));
+
+		Log.LOG.revert();
+		for(SongClass songClass : Songs.getSamples().getClasses())
+			Log.LOG.printLine(String.format("Score %s: %f", songClass.getName(), songClass.getFAverageScore(tree)));
 	}
 
-	public double getFScore(List<Song> group, Node<Song> node) {
-		double score = getScore(group, node);
-		if(node instanceof LeafNode)
-			return score;
-		TreeNode<Song> tree = (TreeNode<Song>) node;
-		TypePair<Node<Song>> children = tree.getChildren();
-		return Math.max(Math.max(getFScore(group, children.getFirst()), getFScore(group, children.getSecond())), score);
-	}
-
-	public double getScore(List<Song> group, Node<Song> songs) {
-		int classCount = group.size();
-		List<Song> clusterElements = NodeFlattener.flatten(songs);
-		int clusterCount = clusterElements.size();
-		int correctCount = countCorrect(group, clusterElements);
-		double recall = correctCount / (double) classCount;
-		double precision = correctCount / (double) clusterCount;
-		return 2 * recall * precision / (recall + precision);
-	}
-
-	private int countCorrect(List<Song> group, List<Song> clusterElements) {
-		int result = 0;
-		for(Song song : group)
-			if(clusterElements.contains(song))
-				result++;
-		return result;
+	private static String getTypeString(Compressor<Song> compressor, Combiner<Song> combiner, Linkage linkage) {
+		String type = "";
+		if(compressor instanceof FlacCompressor)
+			type += "Flac";
+		else if(compressor instanceof VorbisCompressor)
+			type += "Vorbis";
+		else
+			type += "Unknown";
+		if(combiner instanceof MixingCombiner)
+			type += "Mix";
+		else if(combiner instanceof ConcatenationCombiner)
+			type += "Concat";
+		else
+			type += "Unknown";
+		type += linkage.name().substring(0,1).toUpperCase() + linkage.name().substring(1).toLowerCase();
+		type += "Clustering";
+		return type;
 	}
 
 	public double[] pairwiseDistance(List<Song> group, TreeNode<Song> songs) {
