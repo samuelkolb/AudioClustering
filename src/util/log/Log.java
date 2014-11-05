@@ -199,6 +199,24 @@ public class Log {
 		}, true);
 	}
 
+	public Log format(final String formatString, final Object... values) {
+		return process(new PrintOperation() {
+			@Override
+			public String getString() {
+				return String.format(formatString, values);
+			}
+		}, false);
+	}
+
+	public Log formatLine(final String formatString, final Object... values) {
+		return process(new PrintOperation() {
+			@Override
+			public String getString() {
+				return String.format(formatString, values);
+			}
+		}, true);
+	}
+
 	/**
 	 * Turns the log on
 	 * @return	The log itself for chaining

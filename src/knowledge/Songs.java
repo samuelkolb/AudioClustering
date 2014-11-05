@@ -3,6 +3,7 @@ package knowledge;
 import audio.Song;
 import util.Vector;
 import util.WriteOnceVector;
+import util.log.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,12 +17,21 @@ import java.util.List;
  */
 public class Songs {
 
+	// --- Static Variables
 
     private static Songs samples = createSamples();
 
     public static Songs getSamples() {
         return samples;
     }
+
+	private static Songs simpleSongs = createSimpleSongs();
+
+	public static Songs getSimpleSongs() {
+		return simpleSongs;
+	}
+
+	// --- Instance Variables
 
     private final Vector<Song> songs;
 
@@ -47,14 +57,23 @@ public class Songs {
                 classes.get(i).addSong(values[i], song);
     }
 
+	@Override
+	public String toString() {
+		String classes = this.classes.toString();
+		String songs = this.songs.toString();
+		return String.format("Classes: %s, Songs: %s", classes, songs);
+	}
+
+	// --- Static creation
+
     private static Songs createSamples() {
-        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[3]);
+        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[4]);
 
         classes.add(new SongClass("Genre"));
 	    classes.add(new SongClass("Artist"));
-        /*classes.add(new SongClass("Songsamples"));
-        classes.add(new SongClass("Song"));//*/
-        classes.add(new SongClass("Live"));
+		classes.add(new SongClass("Live"));
+        classes.add(new SongClass("SongVersion"));
+        /*classes.add(new SongClass("Song"));//*/
 
         Songs songs = new Songs(classes, 46);
 
@@ -87,18 +106,6 @@ public class Songs {
         addSamples(songs, "Pop", "Katy", 1, 2);
         addSamples(songs, "Pop", "Katy", 2, 1);
 
-    	/*songs.addAll(getSongSamples("Classical", "Brahms", 2));
-		songs.addAll(getSongSamples("Classical", "Mozart", 2));
-		songs.addAll(getSongSamples("Classical", "Tschaikovsky", 4));
-		songs.addAll(getSongSamples("Live", "Manson", 7));
-		songs.addAll(getSongSamples("Live", "Slipknot", 4));
-		songs.addAll(getSongSamples("Metal", "Cradle", 4));
-        songs.addAll(getSongSamples("Metal", "Manson", 5));
-        songs.addAll(getSongSamples("Metal", "Slipknot", 4));
-		songs.addAll(getSongSamples("Metal", "Trivium", 3));
-		songs.addAll(getSongSamples("Pop", "BSB", 3));
-		songs.addAll(getSongSamples("Pop", "Gaga", 3));
-		songs.addAll(getSongSamples("Pop", "Katy", 3));*/
         return songs;
     }
 
@@ -108,9 +115,36 @@ public class Songs {
             File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
 			String genreLabel = genre.equals("Live") ? null : genre;
 			String liveLabel = genre.equals("Live") ? "Yes" : "No";
-			songs.addSong(new Song(file), genreLabel, liveLabel, artist);
+			songs.addSong(new Song(file), genreLabel, liveLabel, artist, genre+artist+song);
         }
     }
+
+	private static Songs createSimpleSongs() {
+		WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[4]);
+		classes.add(new SongClass("Instrument"));
+		classes.add(new SongClass("Song"));
+		classes.add(new SongClass("SongInstrument"));
+		classes.add(new SongClass("Complexity"));
+
+		String[] songNames = new String[]{"A", "B", "C", "C2"};
+		Songs songs = new Songs(classes, songNames.length*3);
+
+		for(String songName : songNames) {
+			addSimpleSongs(songs, songName, "SGP", 2);
+			addSimpleSongs(songs, songName, "CEP", 1);
+		}
+
+		return songs;
+	}
+
+	private static void addSimpleSongs(Songs songs, String songName, String instrument, int versions) {
+		File dir = Files.res();
+		for(int i = 1; i <= versions; i++) {
+			File file = new File(dir, String.format("Song%s_%s_%d.wav", songName, instrument, i));
+			String complexity = songName.equals("C2") ? "Complex" : "Simple";
+			songs.addSong(new Song(file), instrument, songName, songName+instrument, complexity);
+		}
+	}
 
 	/*public static List<Song> getCustomSongs() {
 		List<Song> songs = new ArrayList<>();

@@ -5,8 +5,6 @@ import association.HashAssociation;
 import audio.Song;
 import clustering.*;
 import util.TypePair;
-import util.Vector;
-import util.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,14 +30,6 @@ public class SongClass {
 
 	//region Construction
 
-   /* public SongClass(Vector<Song> songs) {
-        for(int i = 0; i < songs.size() - 1; i++) {
-            String[] splitName = songs.get(i).getSongName().split("/([^_]+)/g");
-            for(int j = 0; j < splitName.length - 1; j++){
-                addSong(splitName[j], songs.get(i));
-            }
-        }
-    }*/
 	public SongClass(String name) {
 		this.name = name;
 	}
@@ -63,9 +53,16 @@ public class SongClass {
 		return this.association.containsValue(song);
 	}
 
-	public double getFAverageScore(Node<Song> node) {
-		double max = 0;
+	public double getFBaseLine(Node<Song> node) {
 		TreeNode<Song> tree = (TreeNode<Song>) node;
+		double allClusters = getFAverageScore(NodeCutter.cut(tree, 0));
+		double oneCluster = getFAverageScore(NodeCutter.cut(tree, tree.getLabel() + 1));
+		return Math.max(allClusters, oneCluster);
+	}
+
+	public double getFAverageScore(Node<Song> node) {
+		TreeNode<Song> tree = (TreeNode<Song>) node;
+		double max = 0;
 		for(int i = 0; i <= tree.getLabel(); i++)
 			max = Math.max(max, getFAverageScore(NodeCutter.cut(tree, i)));
 		return max;
@@ -82,23 +79,24 @@ public class SongClass {
 		return score;
 	}
 
-	public double getFScore(Node<Song> node) {
+	public double getFMaxScore(Node<Song> node) {
 		double score = 0;
 		for(String value : this.association.getKeys()) {
-			double fScore = getFScore(value, node);
-			Log.LOG.printLine(String.format("Score: %f for value: %s", fScore, value));
+			double fScore = getFMaxScore(value, node);
+			//Log.LOG.printLine(String.format("Score: %f for value: %s", fScore, value));
 			score += fScore / this.association.getKeys().size();
 		}
 		return score;
 	}
 
-	private double getFScore(String value, Node<Song> node) {
+	private double getFMaxScore(String value, Node<Song> node) {
 		double score = getScore(value, node);
 		if(node instanceof LeafNode)
 			return score;
 		TreeNode<Song> tree = (TreeNode<Song>) node;
 		TypePair<Node<Song>> children = tree.getChildren();
-		return Math.max(Math.max(getFScore(value, children.getFirst()), getFScore(value, children.getSecond())), score);
+		double childrenScore = Math.max(getFMaxScore(value, children.get(0)), getFMaxScore(value, children.get(1)));
+		return Math.max(childrenScore, score);
 	}
 
 	private double getScore(String value, Node<Song> songs) {
