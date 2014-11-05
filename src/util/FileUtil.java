@@ -4,6 +4,10 @@ import java.io.*;
 
 /**
  * Created by samuelkolb on 29/10/14.
+ *
+ * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class FileUtil {
 

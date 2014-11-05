@@ -6,6 +6,8 @@ import java.util.*;
  * Created by samuelkolb on 23/10/14.
  *
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class Vector<T> implements Collection<T> {
 

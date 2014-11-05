@@ -6,6 +6,8 @@ import util.StringUtil;
  * Created by samuelkolb on 20/10/14.
  *
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class DashLinePrinter implements PrintOperation {
 

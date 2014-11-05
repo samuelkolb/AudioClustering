@@ -4,6 +4,8 @@ package util;
  * Created by samuelkolb on 19/10/14.
  *
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public interface Pair<T1, T2> {
 

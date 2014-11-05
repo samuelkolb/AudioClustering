@@ -7,6 +7,8 @@ import java.util.List;
 /**
  * Contains methods to perform common array operations
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class ArrayUtil {
 

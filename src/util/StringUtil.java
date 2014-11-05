@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 /**
  * Contains methods to print commonly used objects to different output formats
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class StringUtil {
 

@@ -7,6 +7,8 @@ import java.util.*;
 /**
  * Holds two objects
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public interface TypePair<T> extends Pair<T, T>, Collection<T> {
 

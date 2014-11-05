@@ -7,6 +7,8 @@ import java.util.Collection;
 /**
  * Supports different print formats for lists
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public enum PrintFormat {
 	COMMA_SEPARATED {

@@ -6,6 +6,8 @@ import java.util.Collection;
  * Created by samuelkolb on 03/11/14.
  *
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class WriteOnceVector<T> extends Vector<T> {
 
@@ -19,6 +21,11 @@ public class WriteOnceVector<T> extends Vector<T> {
 	//endregion
 
 	//region Construction
+
+	/**
+	 * Creates a vector with an initially empty array that can be filled up once
+	 * @param array	The initial array, values will be overwritten
+	 */
 	public WriteOnceVector(T[] array) {
 		super(array);
 	}

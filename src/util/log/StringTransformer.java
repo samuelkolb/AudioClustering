@@ -4,6 +4,8 @@ package util.log;
  * String transformers can transform logging messages
  *
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public interface StringTransformer {
 
