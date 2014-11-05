@@ -5,6 +5,7 @@ import association.HashAssociation;
 import audio.Song;
 import clustering.*;
 import util.TypePair;
+import util.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,10 +85,37 @@ public class SongClass {
 		for(String value : this.association.getKeys()) {
 			double fScore = getFMaxScore(value, node);
 			//Log.LOG.printLine(String.format("Score: %f for value: %s", fScore, value));
-			score += fScore / this.association.getKeys().size();
+			score += fScore / this.association.getKeyCount();
 		}
 		return score;
 	}
+
+	public double getPairwiseDistance(Node<Song> node) {
+		double score = 0;
+		for(String value : this.association.getKeys()) {
+			double distance = pairwiseDistance(value, node);
+			Log.LOG.formatLine("Score: %f for value: %s", distance, value);
+			score += distance / this.association.getKeyCount();
+		}
+		return score;
+	}
+
+	private double pairwiseDistance(String value, Node<Song> node) {
+		TreeNode<Song> tree = (TreeNode<Song>) node;
+		List<Song> values = new ArrayList<>(this.association.getValues(value));
+		int numberOfPairs = (values.size() * (values.size() - 1)) / 2;
+		double[] distances = new double[numberOfPairs];
+		int index = 0;
+		for(int i = 0; i < values.size()-1; i++)
+			for(int j = i + 1; j < values.size(); j++)
+				distances[index++] = tree.measureSeparation(values.get(i), values.get(j));
+		double average = 0;
+		for(double distance : distances)
+			average += distance / (double) numberOfPairs;
+		return average;
+	}
+
+
 
 	private double getFMaxScore(String value, Node<Song> node) {
 		double score = getScore(value, node);
