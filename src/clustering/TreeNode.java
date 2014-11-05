@@ -3,6 +3,7 @@ package clustering;
 
 import util.Pair;
 import util.TypePair;
+import util.log.Log;
 
 import java.util.LinkedList;
 
@@ -114,11 +115,14 @@ public class TreeNode<T> extends Node<T> {
 		do {
 			split = path1.pollFirst();
 			path2.pollFirst();
-		} while(path1.peekFirst() == path2.peekFirst());
+		} while(!path1.isEmpty() && !path2.isEmpty() && path1.peekFirst() == path2.peekFirst());
 		int firstNodeLabel = Math.min(leaf1.getParent().getLabel(), leaf2.getParent().getLabel());
 		double distance = split.getLabel() - firstNodeLabel;
 		return distance/getLabel();
 	}
 
-
+	@Override
+	public String toString() {
+		return "TreeNode(" + getLabel() + ")";
+	}
 }
