@@ -117,8 +117,8 @@ public class TreeNode<T> extends Node<T> {
 			path2.pollFirst();
 		} while(!path1.isEmpty() && !path2.isEmpty() && path1.peekFirst() == path2.peekFirst());
 		int firstNodeLabel = Math.min(leaf1.getParent().getLabel(), leaf2.getParent().getLabel());
-		double distance = split.getLabel() - firstNodeLabel;
-		return distance/getLabel();
+		double distance = 2*split.getLabel() - leaf1.getParent().getLabel() - leaf2.getParent().getLabel();
+		return distance/(getLabel()*2);
 	}
 
 	@Override

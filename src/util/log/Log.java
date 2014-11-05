@@ -192,7 +192,7 @@ public class Log {
 	 * @param objects	The objects to print
 	 * @return The log itself for chaining
 	 */
-	public Log formatObjects(final PrintFormat format, final Object[] objects) {
+	public Log formatObjects(final PrintFormat format, final Object... objects) {
 		return process(new PrintOperation() {
 			@Override
 			public String getString() {

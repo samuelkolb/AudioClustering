@@ -26,6 +26,11 @@ public enum PrintFormat {
 		public String print(Object... objects) {
 			return StringUtil.join("", objects);
 		}
+	}, TAB_SEPARATED {
+		@Override
+		public String print(Object... objects) {
+			return StringUtil.join("\t", objects);
+		}
 	};
 
 	/**
