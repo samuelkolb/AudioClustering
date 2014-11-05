@@ -20,6 +20,7 @@ public class TreeNode<T> extends Node<T> {
 
 	private final int label;
 
+	@Override
 	public int getLabel() {
 		return label;
 	}
@@ -116,7 +117,6 @@ public class TreeNode<T> extends Node<T> {
 			split = path1.pollFirst();
 			path2.pollFirst();
 		} while(!path1.isEmpty() && !path2.isEmpty() && path1.peekFirst() == path2.peekFirst());
-		int firstNodeLabel = Math.min(leaf1.getParent().getLabel(), leaf2.getParent().getLabel());
 		double distance = 2*split.getLabel() - leaf1.getParent().getLabel() - leaf2.getParent().getLabel();
 		return distance/(getLabel()*2);
 	}

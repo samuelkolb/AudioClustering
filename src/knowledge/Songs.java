@@ -45,8 +45,15 @@ public class Songs {
         return classes;
     }
 
-    public Songs(Vector<SongClass> classes, int numberSongs) {
+	private final Vector<SongClass> broadClasses;
+
+	public Vector<SongClass> getBroadClasses() {
+		return broadClasses;
+	}
+
+	public Songs(Vector<SongClass> classes, Vector<SongClass> broadClasses, int numberSongs) {
         this.classes = classes;
+		this.broadClasses = broadClasses;
         this.songs = new WriteOnceVector<>(new Song[numberSongs]);
     }
 
@@ -67,15 +74,15 @@ public class Songs {
 	// --- Static creation
 
     private static Songs createSamples() {
-        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[4]);
+        WriteOnceVector<SongClass> classes = new WriteOnceVector<>(new SongClass[5]);
 
         classes.add(new SongClass("Genre"));
 	    classes.add(new SongClass("Artist"));
 		classes.add(new SongClass("Live"));
         classes.add(new SongClass("SongVersion"));
-        /*classes.add(new SongClass("Song"));//*/
+        classes.add(new SongClass("Song"));
 
-        Songs songs = new Songs(classes, 46);
+        Songs songs = new Songs(classes, classes.subVector(0, 3), 46);
 
         addSamples(songs, "Classical", "Brahms", 1, 2);
         addSamples(songs, "Classical", "Mozart", 1, 2);
@@ -115,7 +122,12 @@ public class Songs {
             File file = new File(dir, genre + "_" + artist + "_song" + song + "_" + i + ".wav");
 			String genreLabel = genre.equals("Live") ? null : genre;
 			String liveLabel = genre.equals("Live") ? "Yes" : "No";
-			songs.addSong(new Song(file), genreLabel, liveLabel, artist, genre+artist+song);
+			String songLabel;
+			if((artist.equals("Manson") && song <= 2) || (artist.equals("Slipknot") && song <= 2))
+				songLabel = artist+song;
+			else
+				songLabel = null;
+			songs.addSong(new Song(file), genreLabel, artist, liveLabel, genre+artist+song, songLabel);
         }
     }
 
@@ -127,7 +139,7 @@ public class Songs {
 		classes.add(new SongClass("Complexity"));
 
 		String[] songNames = new String[]{"A", "B", "C", "C2"};
-		Songs songs = new Songs(classes, songNames.length*3);
+		Songs songs = new Songs(classes, classes.subVector(0, 2), songNames.length*3);
 
 		for(String songName : songNames) {
 			addSimpleSongs(songs, songName, "SGP", 2);

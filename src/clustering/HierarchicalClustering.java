@@ -87,6 +87,7 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	}
 
 	private void fillDistances() {
+		//List<double[]>
 		distances = new ArrayList<>(instances.size()-1);
 		for(int i = 0; i < instances.size()-1; i++) {
 			distances.add(new double[instances.size()-i-1]);

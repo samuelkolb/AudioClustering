@@ -63,4 +63,6 @@ public abstract class Node<T> {
 			getParent().extendPath(path);
 		}
 	}
+
+	public abstract int getLabel();
 }

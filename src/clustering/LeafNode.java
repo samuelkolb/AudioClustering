@@ -52,4 +52,9 @@ public class LeafNode<T> extends Node<T> {
 	public boolean contains(T value) {
 		return getElement().equals(value);
 	}
+
+	@Override
+	public int getLabel() {
+		return 0;
+	}
 }

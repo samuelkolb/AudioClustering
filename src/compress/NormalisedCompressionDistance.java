@@ -7,19 +7,19 @@ import audio.Song;
  *
  * @author Samuel Kolb
  */
-public class NormalisedCompressionDistance<T> implements DistanceMeasure<T> {
+public class NormalisedCompressionDistance implements DistanceMeasure<Song> {
 
 	//region Variables
 
-	private final Compressor<T> compressor;
+	private final Compressor<Song> compressor;
 
-	public Compressor<T> getCompressor() {
+	public Compressor<Song> getCompressor() {
 		return compressor;
 	}
 
-	private final Combiner<T> combiner;
+	private final Combiner<Song> combiner;
 
-	public Combiner<T> getCombiner() {
+	public Combiner<Song> getCombiner() {
 		return combiner;
 	}
 
@@ -32,7 +32,7 @@ public class NormalisedCompressionDistance<T> implements DistanceMeasure<T> {
 	 * @param compressor	The compressor to use
 	 * @param combiner		The combiner to use
 	 */
-	public NormalisedCompressionDistance(Compressor<T> compressor, Combiner<T> combiner) {
+	public NormalisedCompressionDistance(Compressor<Song> compressor, Combiner<Song> combiner) {
 		this.compressor = compressor;
 		this.combiner = combiner;
 	}
@@ -42,7 +42,7 @@ public class NormalisedCompressionDistance<T> implements DistanceMeasure<T> {
 	//region Public methods
 
 	@Override
-	public double distance(T element1, T element2) {
+	public double distance(Song element1, Song element2) {
 		double size1 = getCompressor().compress(element1);
 		double size2 = getCompressor().compress(element2);
 		double combinedSize = getCompressor().compress(getCombiner().combine(element1, element2));
