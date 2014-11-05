@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Samuel Kolb
  */
-public class FlacClustering {
+public class AudioClustering {
 
 	//region Variables
 	//endregion
@@ -28,13 +28,13 @@ public class FlacClustering {
 	//region Public methods
 	public static void main(String[] args) {
 		Songs songs;
-		if(args.length >= 1 && args[0].equalsIgnoreCase("samples"))
+		//if(args.length >= 1 && args[0].equalsIgnoreCase("samples"))
 		 	songs = Songs.getSamples();
-		else
-			songs = Songs.getSimpleSongs();
+		//else
+			/*/songs = Songs.getSimpleSongs();/**/
 
-		for(Compressor<Song> compressor : Arrays.asList(new FlacCompressor(), new VorbisCompressor()))
-			for(Combiner<Song> combiner : Arrays.asList(new MixingCombiner(), new ConcatenationCombiner()))
+		for(Combiner<Song> combiner : Arrays.asList(new MixingCombiner(), new ConcatenationCombiner()))
+			for(Compressor<Song> compressor : Arrays.asList(new FlacCompressor(), new VorbisCompressor()))
 				for(Linkage linkage : Arrays.asList(Linkage.COMPLETE)/*/Linkage.values()/**/)
 					cluster(compressor, combiner, linkage, songs);
 	}
@@ -55,6 +55,8 @@ public class FlacClustering {
 			double fScore = songClass.getFMaxScore(tree);
 			double correctedFScore = (fScore - songClass.getFBaseLine(tree))/(1 - songClass.getFBaseLine(tree));
 			Log.LOG.formatLine("%f\t%f", correctedFAverageScore, correctedFScore);
+			//Log.LOG.formatLine("Pairwise distance %s: %f", songClass, songClass.getPairwiseDistance(tree));
+			//Log.LOG.printLine(songClass.getPairwiseDistance(tree));
 			//Log.LOG.printLine(String.format("FAScore %s: %f (%f)", songClass.getName(), fAverageScore, correctedFAverageScore));
 			//Log.LOG.printLine(String.format("FScore %s: %f (%f)", songClass.getName(), fScore, correctedFScore));
 		}
@@ -78,17 +80,6 @@ public class FlacClustering {
 		type += "Clustering";
 		return type;
 	}
-
-	public double[] pairwiseDistance(List<Song> group, TreeNode<Song> songs) {
-		int numberOfPairs = (group.size() * (group.size() - 1)) / 2;
-		double[] distances = new double[numberOfPairs];
-		int index = 0;
-		for(int i = 0; i < group.size()-1; i++)
-			for(int j = i + 1; j < group.size(); j++)
-				distances[index++] = songs.measureSeparation(group.get(i), group.get(j));
-		return distances;
-	}
-
 	//public
 	//endregion
 }
