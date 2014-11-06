@@ -6,6 +6,8 @@ import java.util.*;
  * Associates keys with multiple values.
  * Keys can be obtained through values and values through keys.
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class HashAssociation<O, M> implements Association<O,M> {
 

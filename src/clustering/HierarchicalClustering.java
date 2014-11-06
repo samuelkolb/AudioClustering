@@ -32,10 +32,51 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 		}
 	}
 
+	public static class Distances<T> {
+
+		private Map<T, Integer> instanceIndices = new HashMap<>();
+
+		private List<double[]> distances;
+
+		public Distances(List<T> instances, DistanceMeasure<T> distanceMeasure) {
+			for(int i = 0; i < instances.size(); i++)
+				instanceIndices.put(instances.get(i), i);
+			fillDistances(instances, distanceMeasure);
+		}
+
+		private void fillDistances(List<T> instances, DistanceMeasure<T> distanceMeasure) {
+			distances = new ArrayList<>(instances.size()-1);
+			for(int i = 0; i < instances.size()-1; i++) {
+				distances.add(new double[instances.size()-i-1]);
+				for(int j = i+1; j < instances.size(); j++)
+					distances.get(i)[j-i-1] = distanceMeasure.distance(instances.get(i), instances.get(j));
+			}
+		}
+
+		public double getDistance(T instance1, T instance2) {
+			return getDistance(this.instanceIndices.get(instance1), this.instanceIndices.get(instance2));
+		}
+
+		private double getDistance(int index1, int index2) {
+			if(index1 == index2)
+				return 0.0 ;
+			if(index1 > index2)
+				return getDistance(index2, index1);
+			return distances.get(index1)[index2-index1-1];
+		}
+
+		private void updateDistance(int index1, int index2, double distance) {
+			if(index1 > index2)
+				updateDistance(index2, index1, distance);
+			else if(index1 < index2)
+				distances.get(index1)[index2-index1-1] = distance;
+			else if(distance != 0.0)
+				throw new IllegalStateException("Distance between an instance and itself must be 0");
+		}
+	}
+
 	//region Variables
 	private final DistanceMeasure<T> distanceMeasure;
-
-	private List<T> instances;
 
 	private List<Cluster> clusters;
 
@@ -43,7 +84,11 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 		return distanceMeasure;
 	}
 
-	private List<double[]> distances;
+	private Distances<T> distances;
+
+	public Distances<T> getDistances() {
+		return distances;
+	}
 
 	private Linkage linkage;
 
@@ -70,7 +115,6 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	public Node<T> cluster(Collection<T> instances) {
 		init(instances);
 		Log.LOG.printLine("Filling distances");
-		fillDistances();
 		Log.LOG.printLine("Clustering");
 		cluster();
 		return clusters.get(0).node;
@@ -79,21 +123,12 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 	//endregion
 
 	private void init(Collection<T> instances) {
-		this.instances = new ArrayList<>(instances);
+		List<T> instances1 = new ArrayList<>(instances);
+		this.distances = new Distances<>(instances1, this.distanceMeasure);
 		this.clusters = new LinkedList<>();
-		for(int i = 0; i < this.instances.size(); i++)
-			this.clusters.add(new Cluster(new LeafNode<>(this.instances.get(i)), i));
+		for(int i = 0; i < instances1.size(); i++)
+			this.clusters.add(new Cluster(new LeafNode<>(instances1.get(i)), i));
 		this.label = 1;
-	}
-
-	private void fillDistances() {
-		//List<double[]>
-		distances = new ArrayList<>(instances.size()-1);
-		for(int i = 0; i < instances.size()-1; i++) {
-			distances.add(new double[instances.size()-i-1]);
-			for(int j = i+1; j < instances.size(); j++)
-				distances.get(i)[j-i-1] = getDistanceMeasure().distance(instances.get(i), instances.get(j));
-		}
 	}
 
 	private void cluster() {
@@ -129,29 +164,11 @@ public class HierarchicalClustering<T> implements ClusteringAlgorithm<T> {
 				double distance1 = getDistance(cluster, growing);
 				double distance2 = getDistance(cluster, disappearing);
 				double newDistance = linkage.combine(distance1, distance2);
-				updateDistance(cluster.getDelegate(), growing.getDelegate(), newDistance);
+				this.distances.updateDistance(cluster.getDelegate(), growing.getDelegate(), newDistance);
 			}
 	}
 
-	private void updateDistance(int index1, int index2, double distance) {
-		if(index1 > index2)
-			updateDistance(index2, index1, distance);
-		else if(index1 < index2)
-			distances.get(index1)[index2-index1-1] = distance;
-		else if(distance != 0.0)
-			throw new IllegalStateException("Distance between an instance and itself must be 0");
-	}
-
 	private double getDistance(Cluster cluster1, Cluster cluster2) {
-		return getDistance(cluster1.getDelegate(), cluster2.getDelegate());
+		return this.distances.getDistance(cluster1.getDelegate(), cluster2.getDelegate());
 	}
-
-	private double getDistance(int index1, int index2) {
-		if(index1 == index2)
-			return 0.0 ;
-		if(index1 > index2)
-			return getDistance(index2, index1);
-		return distances.get(index1)[index2-index1-1];
-	}
-
 }

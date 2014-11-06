@@ -7,6 +7,7 @@ import knowledge.SongClass;
 import knowledge.Songs;
 import util.Vector;
 import util.log.Log;
+import util.log.PrintFormat;
 
 import java.io.File;
 import java.util.Arrays;
@@ -26,44 +27,60 @@ public class AudioClustering {
 	//endregion
 
 	//region Public methods
+
+	/**
+	 * Run the main program
+	 * Uncomment code to select samples or allow command line selection
+	 * @param args	Commandline arguments
+	 */
 	public static void main(String[] args) {
+
 		Songs songs;
-		//if(args.length >= 1 && args[0].equalsIgnoreCase("samples"))
+		if(args.length >= 1 && args[0].equalsIgnoreCase("samples"))
 		 	songs = Songs.getSamples();
-		//else
-			/*/songs = Songs.getSimpleSongs();/**/
+		else
+			songs = Songs.getSimpleSongs();
 
 		for(Combiner<Song> combiner : Arrays.asList(new MixingCombiner(), new ConcatenationCombiner()))
 			for(Compressor<Song> compressor : Arrays.asList(new FlacCompressor(), new VorbisCompressor()))
-				for(Linkage linkage : Arrays.asList(Linkage.AVERAGE)/*/Linkage.values()/**/)
+				for(Linkage linkage : Arrays.asList(Linkage.AVERAGE)/*/Linkage.values()/**/) // Possibly compare linkage
 					cluster(compressor, combiner, linkage, songs);
 	}
 
 	private static void cluster(Compressor<Song> compressor, Combiner<Song> combiner, Linkage linkage, Songs songs) {
 		String type = getTypeString(compressor, combiner, linkage);
-		Log.LOG.printTitle(type).saveState().off();
+
+		Log.LOG.printTitle(type).saveState();
+		Log.LOG.off(); // Remove to print progress during compression
 
 		DistanceMeasure<Song> distance = new NormalisedCompressionDistance(compressor, combiner);
-		ClusteringAlgorithm<Song> algorithm = new HierarchicalClustering<>(distance, linkage);
+		HierarchicalClustering<Song> algorithm = new HierarchicalClustering<>(distance, linkage);
 		Node<Song> tree = algorithm.cluster(songs.getSongs());
+
+		// Creates a GraphViz visualisation in the temp folder
 		NodeVisualizer.visualize(tree, new File(Files.temp(), type + ".gv"));
 
 		Log.LOG.revert();
 		for(SongClass songClass : songs.getClasses()) {
+
 			double fAverageScore = songClass.getFAverageScore(tree);
-			double correctedFAverageScore = (fAverageScore - songClass.getFAverageBaseLine(tree))/(1 - songClass.getFAverageBaseLine(tree));
+			double fAverageBaseLine = songClass.getFAverageBaseLine(tree);
+			double cFAverageScore = (fAverageScore - fAverageBaseLine)/(1 - fAverageBaseLine);
+
 			double fMaxScore = songClass.getFMaxScore(tree);
-			double correctedFMaxScore = (fMaxScore - songClass.getFAverageBaseLine(tree))/(1 - songClass.getFAverageBaseLine(tree));
-			Log.LOG.printLine(songClass.getPairwiseDistance(tree));
-			//Log.LOG.formatLine("%f (%f)", correctedFAverageScore, fMaxScore);
-			//Log.LOG.formatLine("%s: %f / %f - %f, %f", songClass, fAverageScore, fMaxScore, songClass.getFAverageBaseLine(tree), correctedFAverageScore);
-			//Log.LOG.formatLine("Pairwise distance %s: %f", songClass, songClass.getPairwiseDistance(tree));
-			//Log.LOG.formatObjects(PrintFormat.TAB_SEPARATED, songClass.getPairwiseDistance(tree), correctedFAverageScore, correctedFScore);
-			//Log.LOG.printLine(String.format("FAScore %s: %f (%f)", songClass.getName(), fAverageScore, correctedFAverageScore));
-			//Log.LOG.printLine(String.format("FScore %s: %f (%f)", songClass.getName(), fScore, correctedFScore));
+			double separation = songClass.getPairwiseSeparation(tree);
+			double distances = songClass.getPairwiseDistances(tree, algorithm.getDistances());
+
+			// "Raw" printing
+			//Log.LOG.formatObjects(PrintFormat.TAB_SEPARATED, fMaxScore, cFAverageScore, separation, distances);
+
+			Log.LOG.formatLine("Class %s:", songClass);
+			Log.LOG.formatLine("\tFMaxScore:\t%f", fMaxScore);
+			Log.LOG.formatLine("\tCFAvgScore:\t%f", cFAverageScore);
+			Log.LOG.formatLine("\tSeparation:\t%f", separation);
+			Log.LOG.formatLine("\tDistance:\t%f", distances);/**/
 		}
 
-		Log.LOG.printLine("");
 		Vector<SongClass> broadClasses = songs.getBroadClasses();
 		double combinedFScore = SongClass.getCombinedFScore(broadClasses, tree);
 		double combinedFBaseScore = SongClass.getCombinedFBaseLine(broadClasses, tree);

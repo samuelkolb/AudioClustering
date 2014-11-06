@@ -7,6 +7,8 @@ import java.util.Set;
 /**
  * Creates a wrapper around an association view to allow the usage of super-types of the key-value types
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public class AssociationViewWrapper<O, M, OS extends O, MS extends M> implements Association<O, M> {
 

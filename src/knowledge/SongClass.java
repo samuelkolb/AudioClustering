@@ -6,8 +6,6 @@ import audio.Song;
 import clustering.*;
 import util.TypePair;
 import util.Vector;
-import util.log.Log;
-import util.log.PrintFormat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,7 +83,7 @@ public class SongClass {
 	public double getFAverageBaseLine(Node<Song> node) {
 		TreeNode<Song> tree = (TreeNode<Song>) node;
 		double allClusters = getFAverageScore(NodeCutter.cut(tree, 0));
-		double oneCluster = getFAverageScore(NodeCutter.cut(tree, tree.getLabel() + 1));
+		double oneCluster = getFAverageScore(NodeCutter.cut(tree, tree.getLabel()));
 		return Math.max(allClusters, oneCluster);
 	}
 
@@ -143,17 +141,32 @@ public class SongClass {
 	}
 
 	/**
-	 * Returns the average pairwise distance for the given node
-	 * @param node	The root node to determine the pairwise distance for
-	 * @return	The average pairwise distance per class value
+	 * Returns the average pairwise separation for the given node
+	 * @param node	The root node to determine the pairwise separation for
+	 * @return	The average pairwise separation per class value
 	 */
-	public double getPairwiseDistance(Node<Song> node) {
+	public double getPairwiseSeparation(Node<Song> node) {
 		double score = 0;
 		for(String value : this.association.getKeys()) {
-			double distance = pairwiseDistance(value, node);
+			double distance = pairwiseSeparation(value, node);
 			score += distance/this.association.getKeyCount();
 		}
 		return score;
+	}
+
+	/**
+	 * Returns the average pairwise distance for the given node
+	 * @param node		The root node to determine the pairwise distance for
+	 * @param distances	The distances object (retrieved from clustering) containing pairwise distances
+	 * @return	The average pairwise distance per class value
+	 */
+	public double getPairwiseDistances(Node<Song> node, HierarchicalClustering.Distances<Song> distances) {
+		double average = 0;
+		for(String value : this.association.getKeys()) {
+			double classScale = this.association.getValues(value).size() / (double) this.association.getValueCount();
+			average += getPairwiseDistances(value, node, distances) * classScale;
+		}
+		return average;
 	}
 
 	@Override
@@ -198,10 +211,12 @@ public class SongClass {
 		return distance;
 	}
 
-	private double pairwiseDistance(String value, Node<Song> node) {
+	private double pairwiseSeparation(String value, Node<Song> node) {
 		TreeNode<Song> tree = (TreeNode<Song>) node;
 		List<Song> values = new ArrayList<>(this.association.getValues(value));
 		int numberOfPairs = (values.size() * (values.size() - 1)) / 2;
+		if(numberOfPairs == 0)
+			return 0;
 		double[] distances = new double[numberOfPairs];
 		int index = 0;
 		for(int i = 0; i < values.size()-1; i++)
@@ -210,9 +225,19 @@ public class SongClass {
 		double average = 0;
 		for(double distance : distances)
 			average += distance / (double) numberOfPairs;
-		//average -= (distanceBaseLine(values.size()) / (double) numberOfPairs);
+		average -= (distanceBaseLine(values.size()) / (double) numberOfPairs / (2*node.getLabel()));
 		double classScale = this.association.getValues(value).size() / (double) this.association.getValueCount();
 		return average * classScale;
+	}
+
+	private double getPairwiseDistances(String value, Node<Song> node, HierarchicalClustering.Distances<Song> distances) {
+		List<Song> values = new ArrayList<>(this.association.getValues(value));
+		int numberOfPairs = (values.size() * (values.size() - 1)) / 2;
+		double distance = 0;
+		for(int i = 0; i < values.size() - 1; i++)
+			for(int j = i + 1; j < values.size(); j++)
+				distance += (distances.getDistance(values.get(i), values.get(j)) / (double) numberOfPairs);
+		return distance;
 	}
 
 	private double getFMaxScore(String value, Node<Song> node) {

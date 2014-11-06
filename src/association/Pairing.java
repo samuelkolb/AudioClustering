@@ -5,6 +5,8 @@ import java.util.Map;
 /**
  * A pairing is a one-to-one association
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public interface Pairing<K, V> extends Relation<K, V>, Map<K, V> {
 

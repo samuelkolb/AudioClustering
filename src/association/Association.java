@@ -7,7 +7,10 @@ import java.util.Set;
  * Associates keys with multiple values.
  * Keys can be obtained through values and values through keys.
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
+
 public interface Association<O, M> extends Relation<O, M> {
 
 	public static class View<O, M> implements Association<O, M> {

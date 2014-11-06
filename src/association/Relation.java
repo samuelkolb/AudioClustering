@@ -8,6 +8,8 @@ import java.util.Set;
  * The first type is referred to as key, the second as value.
  * This allows for simpler formulation, but the relation is effectively two-ways.
  * @author Samuel Kolb
+ *
+ * Copyright (c) Samuel Kolb. All rights reserved.
  */
 public interface Relation<K, V> {
 
